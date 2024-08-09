@@ -1,6 +1,7 @@
 import json
 import csv
 import pathlib
+
 """
 This utilities module provides a set of functions to handle common file operations and data manipulation tasks including:
 - Path validation and directory creation
@@ -9,6 +10,7 @@ This utilities module provides a set of functions to handle common file operatio
 - Data cleaning for CSV contents
 - Extracting a specific column from 2D data lists
 """
+
 
 def validate_paths(list_of_paths):
     """
@@ -30,7 +32,8 @@ def validate_paths(list_of_paths):
             path.mkdir(parents=True, exist_ok=True)
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
-            
+
+
 def write_json(path, data, indent=4, sort_keys=True):
     """
     Writes a Python data structure to a JSON file.
@@ -62,6 +65,28 @@ def read_json(path):
         return json.load(file)
 
 
+def find_delimited_files(directory):
+    """
+    Retrieves all files from the specified directory that are likely to be readable
+    by the read_delim_file function, which includes typical delimiter-separated values files.
+
+    Args:
+        directory (str): The path to the directory from which to retrieve the files.
+
+    Returns:
+        list of pathlib.Path: A list of paths to the files that match common delimited file extensions.
+    """
+    target_directory = pathlib.Path(directory)
+
+    file_extensions = [".csv", ".tsv", ".txt"]
+
+    compatible_files = [
+        file for ext in file_extensions for file in target_directory.glob(f"*{ext}")
+    ]
+
+    return compatible_files
+
+
 def read_delim_file(path):
     """
     Reads a delimited file and detects its dialect.
@@ -71,7 +96,7 @@ def read_delim_file(path):
 
     Returns:
         tuple: A tuple containing a list of rows from the file and the detected CSV dialect.
-        
+
     Automatically detects the delimiter of the file using csv.Sniffer and reads the file accordingly.
     """
     with open(path, newline="") as delim_file:

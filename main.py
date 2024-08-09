@@ -1,4 +1,5 @@
-from utilities import read_delim_file, write_delim_file, clean_data, get_column, validate_paths
+from configs import PATHS, ANONYMIZE_CONFIGS
+from utilities import read_delim_file, write_delim_file, clean_data, get_column, validate_paths, find_delimited_files
 from classes import TypedCipher, NameCipher
 import pathlib
 
@@ -15,26 +16,7 @@ Uses:
 The configurations for anonymization are specified in `ANONYMIZE_CONFIGS`.
 """
 
-CONFIDENTIAL_PATH = "confidential"
-ANONYMIZED_PATH = "anonymized"
-
-PROCESS_FILE = "purchasing_records.csv"
-ANONYMIZE_CONFIGS = [
-    {"index": 0, "type": "TypedCipher"},
-    {
-        "index": 5,
-        "type": "Redact",
-        "options": {
-            "reason": "This information was redacted because the information was not easily anonymizable"
-        },
-    },
-    {"index": 6, "type": "NameCipher", "options": {"name_match_confidence": 85.0}},
-    {"index": 7, "type": "NameCipher", "options": {"name_match_confidence": 85.0}},
-    {"index": 8, "type": "TypedCipher"},
-    {"index": 9, "type": "TypedCipher"},
-]
-
-validate_paths([CONFIDENTIAL_PATH, ANONYMIZED_PATH])
+validate_paths(list(PATHS.values()))
 
 def anonymize_data(data, anon_configs):
     """
@@ -83,14 +65,16 @@ if __name__ == "__main__":
     - Anonymizes the data based on predefined configurations.
     - Writes the anonymized data back to a file in the specified output directory.
     """
-    confidential_path = pathlib.Path(CONFIDENTIAL_PATH)
-    anonymous_path = pathlib.Path(ANONYMIZED_PATH)
+    confidential_path = pathlib.Path(PATHS.get("confidential", None))
+    anonymous_path = pathlib.Path(PATHS.get("anonymized", None))
     
-    data, dialect = read_delim_file(confidential_path / PROCESS_FILE)
-    data = clean_data(data)
-    headers = data.pop(0)
-    
-    data_anonymized = anonymize_data(data, ANONYMIZE_CONFIGS)
-                    
-    data.insert(0, headers)
-    write_delim_file(anonymous_path / PROCESS_FILE, data_anonymized, dialect.delimiter)
+    for file_path in find_delimited_files(confidential_path):
+        data, dialect = read_delim_file(file_path)
+        data = clean_data(data)
+        headers = data.pop(0)
+        
+        data_anonymized = anonymize_data(data, ANONYMIZE_CONFIGS)
+        data_anonymized.insert(0, headers)
+        
+        anonymized_record_path =  anonymous_path / file_path.name
+        write_delim_file(anonymized_record_path, data_anonymized, dialect.delimiter)
