@@ -1,4 +1,3 @@
-import json
 import csv
 import pathlib
 
@@ -12,76 +11,11 @@ This utilities module provides a set of functions to handle common file operatio
 """
 
 
-def validate_paths(list_of_paths):
-    """
-    Validates and ensures the existence of directories or files specified in the paths list.
-
-    Args:
-        list_of_paths (list or str): A list of path strings or a single path string.
-
-    Ensures that each directory or the parent directory of each file in the list exists,
-    creating them if necessary. Directories are directly checked, while files are checked
-    based on their parent directories.
-    """
-    if not isinstance(list_of_paths, list):
-        list_of_paths = [list_of_paths]
-
-    for path_string in list_of_paths:
-        path = pathlib.Path(path_string)
-        if path.suffix == "":
-            path.mkdir(parents=True, exist_ok=True)
-        else:
-            path.parent.mkdir(parents=True, exist_ok=True)
-
-
-def write_json(path, data, indent=4, sort_keys=True):
-    """
-    Writes a Python data structure to a JSON file.
-
-    Args:
-        path (str): The file path where the JSON data will be written.
-        data (dict or list): The data to write to the JSON file.
-        indent (int): The indentation level for pretty-printing the JSON file.
-        sort_keys (bool): Whether to sort the dictionary keys.
-
-    Writes the data to a JSON file at the specified path with optional sorting of keys
-    and indentation for better readability.
-    """
-    with open(path, "w") as file:
-        json.dump(data, file, indent=indent, sort_keys=sort_keys)
-
-
-def read_json(path):
-    """
-    Reads a JSON file and returns the data.
-
-    Args:
-        path (str): The file path from which to read the JSON data.
-
-    Returns:
-        dict or list: The data loaded from the JSON file.
-    """
-    with open(path, mode="r") as file:
-        return json.load(file)
-
-
 def find_delimited_files(directory):
-    """
-    Retrieves all files from the specified directory that are likely to be readable
-    by the read_delim_file function, which includes typical delimiter-separated values files.
-
-    Args:
-        directory (str): The path to the directory from which to retrieve the files.
-
-    Returns:
-        list of pathlib.Path: A list of paths to the files that match common delimited file extensions.
-    """
-    target_directory = pathlib.Path(directory)
-
     file_extensions = [".csv", ".tsv", ".txt"]
 
     compatible_files = [
-        file for ext in file_extensions for file in target_directory.glob(f"*{ext}")
+        file for ext in file_extensions for file in directory.glob(f"*{ext}")
     ]
 
     return compatible_files
