@@ -1,7 +1,8 @@
 import csv
+from typing import List, Tuple, Union
+from pathlib import Path
 
-
-def find_delimited_files(directory):
+def find_delimited_files(directory: Path) -> List[Path]:
     file_extensions = [".csv", ".tsv", ".txt"]
 
     compatible_files = [
@@ -11,7 +12,7 @@ def find_delimited_files(directory):
     return compatible_files
 
 
-def read_delim_file(path):
+def read_delim_file(path: Union[str, Path]) -> Tuple[List[List[str]], csv.Dialect]:
     """
     Reads a delimited file and detects its dialect.
 
@@ -29,7 +30,7 @@ def read_delim_file(path):
         return list(csv.reader(delim_file, dialect)), dialect
 
 
-def write_delim_file(path, data, delim):
+def write_delim_file(path: Union[str, Path], data: List[List[str]], delim: str) -> None:
     """
     Writes a list of lists (data) to a file using a specified delimiter.
 
@@ -45,7 +46,7 @@ def write_delim_file(path, data, delim):
         writer.writerows(data)
 
 
-def clean_data(data):
+def clean_data(data: List[List[str]]) -> List[List[str]]:
     """
     Cleans a 2D list by removing extra spaces and stripping whitespace from each string.
 
@@ -61,7 +62,7 @@ def clean_data(data):
     return [[item.replace("  ", " ").strip() for item in row] for row in data]
 
 
-def get_column(two_dimensional_list, column_index):
+def get_column(two_dimensional_list: List[List[str]], column_index: int) -> List[str]:
     """
     Extracts a column from a 2D list.
 

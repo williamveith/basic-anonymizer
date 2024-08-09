@@ -1,3 +1,6 @@
+import pathlib
+from typing import List, Tuple, Union
+
 from utilities import (
     read_delim_file,
     write_delim_file,
@@ -13,7 +16,6 @@ from configs import (
     PathSettings,
     PathConfig,
 )
-import pathlib
 
 path_settings = PathSettings(
     path_configs=[
@@ -46,7 +48,10 @@ anonymizer_settings = AnonymizerSettings(
 )
 
 
-def anonymize_data(data, anon_configs):
+def anonymize_data(
+    data: List[List[Union[str, int, float]]],
+    anon_configs: List[AnonymizationConfig]
+) -> List[List[Union[str, int, float]]]:
     for column in anon_configs:
         match column.type:
             case "TypedCipher":
@@ -66,7 +71,9 @@ def anonymize_data(data, anon_configs):
     return data
 
 
-def preprocess_file_data(file_data, headers=True):
+def preprocess_file_data(
+    file_data: List[List[str]], headers: bool = True
+) -> Tuple[List[str], List[List[str]]]:
     data = clean_data(file_data)
     headers = data.pop(0) if headers else []
     return headers, data
