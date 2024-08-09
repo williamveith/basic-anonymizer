@@ -3,7 +3,6 @@ import string
 import pathlib
 import json
 from rapidfuzz import process
-from configs import PathSettings
 
 class TypedCipher:
     def __init__(self, encoding='utf-8'):
