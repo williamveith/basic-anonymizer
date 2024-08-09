@@ -1,0 +1,7 @@
+.DS_Store
+
+confidential/*
+anonymized/*
+venv
+tests
+__pycache__
