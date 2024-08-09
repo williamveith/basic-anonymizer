@@ -68,13 +68,13 @@ class PathSettings:
     Manages a collection of PathConfig objects, providing structured access to multiple file system paths.
 
     Attributes:
-        path_configs (Dict[str, pathlib.Path]): A dictionary that maps each path's name to the `pathlib.Path` object.
+        path_configs (List[PathConfig]): A list of PathConfig objects that represent different paths.
 
     The `__post_init__` method sets up each path as an attribute of the instance, enabling attribute-style access
     to each path based on its name. This setup occurs immediately upon object instantiation.
     """
 
-    path_configs: Dict[str, pathlib.Path] = field(default_factory=dict)
+    path_configs: List[PathConfig] = field(default_factory=list)
 
     def __post_init__(self):
         for path_config in self.path_configs:

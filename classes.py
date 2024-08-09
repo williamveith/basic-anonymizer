@@ -1,3 +1,4 @@
+import secrets
 import random
 import string
 import pathlib
@@ -101,7 +102,7 @@ class NameCipher:
 
     @property
     def random_name(self):
-        return f"{random.choice(self._first_names)} {random.choice(self._last_names)}"
+        return f"{secrets.choice(self._first_names)} {secrets.choice(self._last_names)}"
 
 
 class RedactCipher:
