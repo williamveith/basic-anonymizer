@@ -1,14 +1,5 @@
 import csv
 
-"""
-This utilities module provides a set of functions to handle common file operations and data manipulation tasks including:
-- Path validation and directory creation
-- JSON file reading and writing
-- CSV file reading and writing with automatic delimiter sniffing
-- Data cleaning for CSV contents
-- Extracting a specific column from 2D data lists
-"""
-
 
 def find_delimited_files(directory):
     file_extensions = [".csv", ".tsv", ".txt"]
