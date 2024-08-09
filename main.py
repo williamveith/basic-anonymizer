@@ -2,6 +2,19 @@ from utilities import read_delim_file, write_delim_file, clean_data, get_column,
 from classes import TypedCipher, NameCipher
 import pathlib
 
+"""
+This module handles the anonymization of sensitive data by applying various cipher methods
+to specified columns of a CSV file. The file paths are validated, and the anonymized data is
+saved to a specified output directory.
+
+Uses:
+- `TypedCipher` for general purpose data encryption.
+- `NameCipher` specifically for encrypting names with a confidence threshold.
+- Redaction for columns where data cannot be anonymized.
+
+The configurations for anonymization are specified in `ANONYMIZE_CONFIGS`.
+"""
+
 CONFIDENTIAL_PATH = "confidential"
 ANONYMIZED_PATH = "anonymized"
 
@@ -24,7 +37,20 @@ ANONYMIZE_CONFIGS = [
 validate_paths([CONFIDENTIAL_PATH, ANONYMIZED_PATH])
 
 def anonymize_data(data, anon_configs):
+    """
+    Anonymizes specific columns of data based on the provided configurations.
 
+    Args:
+        data (list of list of str): The 2D list of data (table) to be anonymized.
+        anon_configs (list of dicts): Configuration list where each dictionary specifies
+                                        the column index and the type of anonymization or redaction.
+
+    Returns:
+        list of list of str: The anonymized data as a 2D list.
+
+    Processes each column specified in `anon_configs` using the specified anonymization
+    type, which could be `TypedCipher`, `NameCipher`, or redaction.
+    """
     for column in anon_configs:
         match column["type"]:
             case "TypedCipher":
@@ -49,6 +75,14 @@ def anonymize_data(data, anon_configs):
     return data
     
 if __name__ == "__main__":
+    """
+    Main execution path for the script:
+    - Validates paths for input and output.
+    - Reads a delimited file containing purchasing records.
+    - Cleans the data by stripping and replacing excessive whitespace.
+    - Anonymizes the data based on predefined configurations.
+    - Writes the anonymized data back to a file in the specified output directory.
+    """
     confidential_path = pathlib.Path(CONFIDENTIAL_PATH)
     anonymous_path = pathlib.Path(ANONYMIZED_PATH)
     
